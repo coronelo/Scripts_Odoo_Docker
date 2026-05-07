@@ -284,3 +284,78 @@ configure_npm_proxy() {
         return 1
     fi
 }
+# ====== Menú de gestión de NPM ======
+npm_menu() {
+    while true; do
+        print_header
+        print_section "🌐 GESTIÓN NGINX PROXY MANAGER"
+        
+        local npm_options=(
+            "Instalar Nginx Proxy Manager"
+            "Ver proyectos registrados"
+            "Ver estado del servicio"
+            "Acceder al panel NPM"
+            "Reiniciar NPM"
+            "Ver logs de NPM"
+            "Volver al menú principal"
+        )
+        
+        print_menu "GESTIÓN NPM" "${npm_options[@]}"
+        
+        read -p "Selecciona opción [1-7]: " npm_menu_opt
+        
+        case "$npm_menu_opt" in
+            1)
+                if check_npm_installed; then
+                    warn "Nginx Proxy Manager ya está instalado"
+                    say "Panel: http://${NPM_PANEL_IP}:${NPM_PORT_WEB}" "$C_BLU"
+                else
+                    install_npm
+                fi
+                ;;
+            2)
+                list_npm_projects
+                ;;
+            3)
+                if check_npm_installed; then
+                    if check_npm_healthy; then
+                        ok "✅ Nginx Proxy Manager está funcionando correctamente"
+                        say "Panel: http://${NPM_PANEL_IP}:${NPM_PORT_WEB}" "$C_BLU"
+                    else
+                        warn "⚠️  Nginx Proxy Manager no responde"
+                    fi
+                else
+                    warn "⚠️  Nginx Proxy Manager no está instalado"
+                fi
+                ;;
+            4)
+                say "🔗 Panel NPM: http://${NPM_PANEL_IP}:${NPM_PORT_WEB}" "$C_BLU"
+                say "📧 Credenciales por defecto: admin@example.com / changeme" "$C_CYN"
+                ;;
+            5)
+                if check_npm_installed; then
+                    say "🔄 Reiniciando Nginx Proxy Manager..." "$C_YLW"
+                    docker restart "$NPM_CONTAINER"
+                    ok "✅ NPM reiniciado"
+                else
+                    warn "⚠️  Nginx Proxy Manager no está instalado"
+                fi
+                ;;
+            6)
+                if check_npm_installed; then
+                    say "📝 Logs de Nginx Proxy Manager:" "$C_MAG"
+                    docker logs "$NPM_CONTAINER" --tail 50
+                else
+                    warn "⚠️  Nginx Proxy Manager no está instalado"
+                fi
+                ;;
+            7)
+                return
+                ;;
+            *)
+                warn "Opción no válida"
+                ;;
+        esac
+        read -p "Presiona Enter para continuar..."
+    done
+}

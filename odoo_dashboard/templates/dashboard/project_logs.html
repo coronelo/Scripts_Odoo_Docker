@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+    <h1>Logs: {{ container.name }}</h1>
+    <a href="{% url 'index' %}"><button style="background: transparent; border: 1px solid rgba(255,255,255,0.1);">Volver al Dashboard</button></a>
+</div>
+
+<div class="card" style="background: #000; font-family: 'Courier New', monospace; color: #4ade80; padding: 1.5rem; height: 60vh; overflow-y: auto; border: 1px solid #333;">
+    <pre style="margin: 0; white-space: pre-wrap; font-size: 0.875rem;">{{ logs }}</pre>
+</div>
+
+<div style="margin-top: 1rem; text-align: right;">
+    <p style="color: var(--text-dim); font-size: 0.75rem;">Mostrando las últimas 100 líneas. Refresca para actualizar.</p>
+</div>
+{% endblock %}

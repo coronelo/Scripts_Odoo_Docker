@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+    <h1>Proyecto: {{ project.name }}</h1>
+    <div style="display: flex; gap: 1rem;">
+        <a href="{% url 'trigger_backup' project.id %}"><button style="background: #22c55e;">📦 Generar Backup</button></a>
+        <a href="{% url 'toggle_project' project.name 'restart' %}"><button style="background: #3b82f6;">Reiniciar Todo</button></a>
+        <a href="{% url 'index' %}"><button style="background: transparent; border: 1px solid rgba(255,255,255,0.1);">Cerrar</button></a>
+    </div>
+</div>
+
+{% if success_msg %}
+<div style="background: rgba(34, 197, 94, 0.2); color: #4ade80; padding: 1rem; border-radius: 8px; margin-bottom: 2rem; border: 1px solid #22c55e;">
+    ✅ {{ success_msg }}
+</div>
+{% endif %}
+
+{% if error_msg %}
+<div style="background: rgba(239, 68, 68, 0.2); color: #f87171; padding: 1rem; border-radius: 8px; margin-bottom: 2rem; border: 1px solid #ef4444;">
+    ❌ {{ error_msg }}
+</div>
+{% endif %}
+
+<div style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 2rem;">
+    <!-- Detalles de Configuración -->
+    <div class="card">
+        <h3 style="margin-top: 0; display: flex; align-items: center; gap: 0.75rem;">
+            <span style="font-size: 1.5rem;">🔐</span> Resumen de Credenciales
+        </h3>
+        <div style="margin-top: 1.5rem;">
+            <div style="background: rgba(0,0,0,0.2); padding: 1.25rem; border-radius: 12px; margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.05);">
+                <label style="color: var(--text-dim); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">Usuario de Acceso</label>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem;">
+                    <span style="font-size: 1.1rem; font-weight: 600;">{{ env.ODOO_USER|default:"desarrollo" }}</span>
+                    <button onclick="copyToClipboard('{{ env.ODOO_USER|default:'desarrollo' }}')" style="background: transparent; border: 1px solid rgba(255,255,255,0.1); padding: 0.4rem 0.8rem; font-size: 0.75rem;">Copiar</button>
+                </div>
+            </div>
+
+            <div style="background: rgba(0,0,0,0.2); padding: 1.25rem; border-radius: 12px; margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.05);">
+                <label style="color: var(--text-dim); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">Contraseña Odoo</label>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem;">
+                    <span style="font-size: 1.1rem; font-family: monospace; color: var(--accent-primary);">{{ env.ODOO_PASS }}</span>
+                    <button onclick="copyToClipboard('{{ env.ODOO_PASS }}')" style="background: transparent; border: 1px solid rgba(255,255,255,0.1); padding: 0.4rem 0.8rem; font-size: 0.75rem;">Copiar</button>
+                </div>
+            </div>
+
+            <div style="background: rgba(0,0,0,0.2); padding: 1.25rem; border-radius: 12px; margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.05);">
+                <label style="color: var(--text-dim); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">Master Password (Admin)</label>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem;">
+                    <span style="font-size: 1.1rem; font-family: monospace; color: var(--accent-secondary);">{{ env.ADMIN_PASS }}</span>
+                    <button onclick="copyToClipboard('{{ env.ADMIN_PASS }}')" style="background: transparent; border: 1px solid rgba(255,255,255,0.1); padding: 0.4rem 0.8rem; font-size: 0.75rem;">Copiar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Info del Sistema y Acceso -->
+    <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+        <div class="card" style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(30, 41, 59, 0.7) 100%); border-color: var(--accent-primary);">
+            <h4 style="margin: 0 0 1rem 0; display: flex; align-items: center; gap: 0.5rem;">
+                <span>🌐</span> Punto de Acceso
+            </h4>
+            {% if env.MAIN_DOMAIN %}
+            <p style="margin: 0; font-size: 1.1rem; font-weight: 600; color: #4ade80;">https://{{ env.MAIN_DOMAIN }}</p>
+            <p style="margin: 0.5rem 0 0 0; font-size: 0.75rem; color: var(--text-dim);">Modo Online con SSL habilitado</p>
+            {% else %}
+            <p style="margin: 0; font-size: 1.1rem; font-weight: 600;">http://{{ server_ip }}:8069</p>
+            <p style="margin: 0.5rem 0 0 0; font-size: 0.75rem; color: var(--text-dim);">Acceso local a través de puerto expuesto</p>
+            {% endif %}
+            <a href="http://{{ server_ip }}:8069" target="_blank" style="display: inline-block; margin-top: 1.5rem; color: var(--accent-primary); text-decoration: none; font-size: 0.875rem; font-weight: 600;">Abrir en nueva pestaña ↗</a>
+        </div>
+        
+        <div class="card">
+            <h4 style="margin: 0 0 0.5rem 0; color: var(--text-dim);">Versión y Ruta</h4>
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <span style="background: var(--accent-secondary); padding: 0.2rem 0.6rem; border-radius: 6px; font-size: 0.75rem; font-weight: 700;">V{{ env.ODOO_VERSIONS }}</span>
+                <span style="font-size: 0.875rem; color: var(--text-main);">{{ project.name }}</span>
+            </div>
+            <p style="margin: 1rem 0 0 0; font-size: 0.75rem; color: var(--text-dim); line-height: 1.4;">
+                Carpeta: <br>
+                <code style="background: rgba(0,0,0,0.3); padding: 0.2rem 0.4rem; border-radius: 4px;">{{ project.path }}</code>
+            </p>
+        </div>
+    </div>
+</div>
+
+<script>
+function copyToClipboard(text) {
+    navigator.clipboard.writeText(text).then(() => {
+        alert('Copiado al portapapeles');
+    });
+}
+</script>
+
+<div class="card" style="margin-top: 2rem;">
+    <h3 style="margin-top: 0;">🐳 Contenedores Asociados</h3>
+    <div style="background: #000; padding: 1rem; border-radius: 8px; font-family: monospace; font-size: 0.875rem;">
+        <p style="color: #4ade80; margin: 0;"># docker-compose ps</p>
+        <p style="margin: 0.5rem 0 0 0; color: #fff;">
+            Contenedores detectados para el proyecto '{{ project.name }}'
+        </p>
+    </div>
+</div>
+{% endblock %}

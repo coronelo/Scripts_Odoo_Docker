@@ -16,28 +16,28 @@ Este repositorio contiene un conjunto de herramientas avanzadas para la gestión
 
 ## Scripts Incluidos
 
-### 1. `odoo_manager_full.sh`
-Es el script principal y más completo. Actúa como un "Maestro" para la orquestación de todos los entornos.
+### 1. `odoo_manager_full.sh` (Script Maestro Modular)
+Es el script principal y más completo. Ahora utiliza una arquitectura **modular** para mejorar la mantenibilidad y la legibilidad.
 
-**Funcionalidades:**
+**Cómo funciona:**
+El script actúa como un cargador. Al ejecutarse, importa automáticamente los módulos situados en la carpeta `lib/`:
+*   `lib/utils.sh`: Utilidades del sistema, colores y verificación de dependencias.
+*   `lib/ui.sh`: Componentes visuales (encabezados, menús, cajas de éxito/error).
+*   `lib/config.sh`: Gestión de configuración global y variables de entorno.
+*   `lib/npm.sh`: Orquestación de Nginx Proxy Manager y certificados SSL.
+*   `lib/odoo.sh`: Lógica core para desplegar instancias Odoo, PostgreSQL y Docker Compose.
+
+**Funcionalidades del Menú:**
 *   Instalación y configuración de Nginx Proxy Manager.
 *   Creación de nuevos proyectos Odoo (DB + Odoo Container).
 *   Gestión de redes Docker (`odoo-global-network`).
-*   Menú interactivo para:
-    *   Crear/Eliminar proyectos.
-    *   Ver logs.
-    *   Reiniciar servicios.
-    *   Instalar librerías Python adicionales.
-    *   Gestionar rutas de addons.
+*   Menú interactivo para gestionar logs, reiniciar servicios e instalar dependencias Python.
 
-### 2. `odoo_docker_manager_V2.sh`
-Versión anterior o alternativa del gestor de Docker, mantenida por compatibilidad o como referencia.
+### 2. `delete_dockers.sh`
+Herramienta de utilidad para limpieza rápida de contenedores y volúmenes Docker (¡Usar con precaución, es destructiva!).
 
-### 3. `delete_dockers.sh`
-Herramienta de utilidad para limpieza rápida de contenedores y volúmenes Docker (¡Usar con precaución!).
-
-### 4. `odoo-docker-manager/` (Python)
-Una aplicación Python (en desarrollo) modularizada para gestionar la lógica de Docker de forma más estructurada que los scripts de bash. Incluye gestión de configuraciones y comandos.
+### 3. `odoo-docker-manager/` (Python)
+Una aplicación Python (en desarrollo) para gestionar la lógica de Docker de forma más estructurada que los scripts de bash.
 
 ## Requisitos
 
@@ -53,19 +53,22 @@ Para iniciar el gestor principal:
 sudo ./odoo_manager_full.sh
 ```
 
-Sigue las instrucciones en pantalla para configurar tu directorio de trabajo y comenzar a desplegar instancias.
-
 ## Estructura del Proyecto
 
 ```
 .
-├── odoo_manager_full.sh        # Script principal de gestión
-├── odoo_docker_manager_V2.sh   # Versión V2
-├── delete_dockers.sh           # Script de limpieza
-├── init_project.sh             # Inicializador rápido
-└── odoo-docker-manager/        # CLI en Python (Backend logic)
-    ├── main.py
-    └── ...
+├── odoo_manager_full.sh    # Script principal (Cargador de módulos)
+├── lib/                    # Módulos lógicos (Lógica separada)
+│   ├── config.sh
+│   ├── npm.sh
+│   ├── odoo.sh
+│   ├── ui.sh
+│   └── utils.sh
+├── archive/                # Versiones antiguas y archivadas
+├── backups_scripts/        # Copias de seguridad preventivas
+├── delete_dockers.sh       # Script de limpieza total
+├── init_project.sh         # Inicializador rápido de estructura
+└── odoo-docker-manager/    # CLI en Python (En desarrollo)
 ```
 
 ## Autor

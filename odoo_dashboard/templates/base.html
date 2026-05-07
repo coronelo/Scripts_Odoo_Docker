@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Odoo Docker Hub - Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --accent-primary: #3b82f6;
+            --accent-secondary: #d946ef;
+            --text-main: #f1f5f9;
+            --text-dim: #94a3b8;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 260px;
+            background: rgba(15, 23, 42, 0.9);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 3rem;
+            background: linear-gradient(to right, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-item {
+            padding: 0.75rem 1rem;
+            margin-bottom: 0.5rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: var(--text-dim);
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--text-main);
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            backdrop-filter: blur(16px);
+            transition: transform 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .status-running { background: rgba(34, 197, 94, 0.2); color: #4ade80; }
+        .status-stopped { background: rgba(239, 68, 68, 0.2); color: #f87171; }
+
+        button {
+            background: var(--accent-primary);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.4rem;
+            cursor: pointer;
+            font-weight: 600;
+        }
+    </style>
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo">ODOO DOCKER HUB</div>
+        <a href="{% url 'index' %}" style="text-decoration: none;"><div class="nav-item {% if request.resolver_match.url_name == 'index' %}active{% endif %}">Dashboard</div></a>
+        <a href="{% url 'projects' %}" style="text-decoration: none;"><div class="nav-item {% if request.resolver_match.url_name == 'projects' %}active{% endif %}">Proyectos</div></a>
+        <a href="{% url 'logs_view' %}" style="text-decoration: none;"><div class="nav-item {% if request.resolver_match.url_name == 'logs_view' %}active{% endif %}">Logs</div></a>
+        <a href="{% url 'settings' %}" style="text-decoration: none;"><div class="nav-item {% if request.resolver_match.url_name == 'settings' %}active{% endif %}">Configuración</div></a>
+    </div>
+    <div class="main-content">
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>

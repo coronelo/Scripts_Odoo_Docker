@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Configuración del Sistema</h1>
+<div class="card" style="max-width: 600px;">
+    <h3 style="margin-top: 0;">Rutas y Directorios</h3>
+    <div style="margin-bottom: 1.5rem;">
+        <label style="display: block; color: var(--text-dim); margin-bottom: 0.5rem;">Directorio de Proyectos</label>
+        <input type="text" value="/home/odoo/odoo_projects" style="width: 100%; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 0.5rem; border-radius: 4px;" readonly>
+    </div>
+    <div style="margin-bottom: 1.5rem;">
+        <label style="display: block; color: var(--text-dim); margin-bottom: 0.5rem;">Puerto del Dashboard</label>
+        <input type="text" value="8005" style="width: 100%; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 0.5rem; border-radius: 4px;" readonly>
+    </div>
+    <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 2rem 0;">
+    <h3 style="margin-top: 0;">Nginx Proxy Manager</h3>
+    <p style="color: var(--text-dim);">Panel NPM detectado en http://192.168.18.205:81</p>
+    <button style="width: 100%;">Guardar Cambios</button>
+</div>
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+    <h1>Proyectos Docker</h1>
+    <a href="{% url 'create_project' %}"><button>+ Nuevo Proyecto</button></a>
+</div>
+
+<div class="grid">
+    {% for project in projects %}
+    <div class="card">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+            <a href="{% url 'project_detail' project.id %}" style="text-decoration: none; color: inherit;"><h3 style="margin: 0; cursor: pointer; color: var(--accent-primary);">{{ project.name }}</h3></a>
+            <span class="status-badge {% if project.status == 'RUNNING' %}status-running{% else %}status-stopped{% endif %}">
+                {{ project.status }}
+            </span>
+        </div>
+        <p style="color: var(--text-dim); font-size: 0.875rem; margin-bottom: 1.5rem;">
+            Ruta: {{ project.path }} | {{ project.container_count }} contenedores
+        </p>
+        <div style="display: flex; gap: 0.5rem; justify-content: space-between; align-items: center;">
+            <div style="display: flex; gap: 0.5rem;">
+                {% if project.status == 'RUNNING' %}
+                <a href="{% url 'toggle_project' project.name 'stop' %}"><button style="background: #ef4444; padding: 0.5rem 0.75rem;">Stop</button></a>
+                {% else %}
+                <a href="{% url 'toggle_project' project.name 'start' %}"><button style="background: #22c55e; padding: 0.5rem 0.75rem;">Start</button></a>
+                {% endif %}
+                <a href="{% url 'toggle_project' project.name 'restart' %}"><button style="background: #3b82f6; padding: 0.5rem 0.75rem;">Restart</button></a>
+            </div>
+            <div style="display: flex; gap: 0.5rem;">
+                {% for container in project.containers %}
+                    {% if "odoo" in container.name %}
+                        <a href="{% url 'project_logs' container.id %}"><button style="background: #a855f7; padding: 0.5rem 0.75rem;">Logs</button></a>
+                    {% endif %}
+                {% endfor %}
+                <a href="{% url 'delete_project' project.id %}"><button style="background: rgba(239, 68, 68, 0.1); border: 1px solid #ef4444; color: #ef4444; padding: 0.5rem 0.75rem;">🗑️</button></a>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="card" style="grid-column: 1 / -1; text-align: center; padding: 3rem;">
+        <p>No se encontraron proyectos en ~/odoo_projects</p>
+        <p style="color: var(--text-dim);">Usa el script bash para crear tu primer proyecto o añade uno nuevo aquí.</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

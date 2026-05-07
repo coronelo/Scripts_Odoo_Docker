@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Visor de Logs por Contenedor</h1>
+<div class="grid">
+    {% for container in containers %}
+    <div class="card" style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+            <h3 style="margin: 0;">{{ container.name }}</h3>
+            <p style="color: var(--text-dim); font-size: 0.75rem; margin: 0.5rem 0 0 0;">Status: {{ container.status }}</p>
+        </div>
+        <a href="{% url 'project_logs' container.id %}"><button style="background: #a855f7;">Ver Logs</button></a>
+    </div>
+    {% empty %}
+    <p>No se encontraron contenedores activos.</p>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -113,3 +113,23 @@ print_system_info() {
     
     echo -e "${C_CYN}└──────────────────────────────────────────────────────────┘${C_RESET}"
 }
+
+show_credentials() {
+    local proj="$1"
+    local domain="${2:-}"
+    
+    print_section "🔐 CREDENCIALES DE ACCESO"
+    
+    local content="Proyecto: ${proj}\n"
+    content+="Usuario: ${ODOO_USER:-desarrollo}\n"
+    content+="Contraseña: ${ODOO_PASS}\n"
+    content+="Master Pass: ${ADMIN_PASS}\n"
+    
+    if [[ -n "$domain" ]]; then
+        content+="\n🌐 URL: https://${domain}/"
+    else
+        content+="\n🔵 URL: http://$(detect_ip):8069"
+    fi
+    
+    print_success_box "ACCESO CREADO" "$content"
+}

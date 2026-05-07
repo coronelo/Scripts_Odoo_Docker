@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Eliminar Proyecto: {{ project.name }}</h1>
+
+<div class="card" style="max-width: 600px; border-color: #ef4444;">
+    <p style="font-size: 1.1rem; margin-bottom: 2rem;">
+        ¿Estás seguro de que deseas eliminar este proyecto? Esta acción detendrá y eliminará todos los contenedores asociados.
+    </p>
+
+    <form method="post">
+        {% csrf_token %}
+        <div style="background: rgba(239, 68, 68, 0.1); padding: 1rem; border-radius: 8px; margin-bottom: 2rem;">
+            <label style="display: flex; align-items: center; cursor: pointer;">
+                <input type="checkbox" name="delete_files" value="yes" style="margin-right: 1rem;">
+                <span>También eliminar los archivos físicos en <br><small style="color: var(--text-dim);">{{ project.path }}</small></span>
+            </label>
+        </div>
+
+        <div style="display: flex; gap: 1rem;">
+            <button type="submit" style="flex: 1; background: #ef4444; padding: 1rem;">🗑️ Confirmar Eliminación</button>
+            <a href="{% url 'index' %}" style="flex: 1; text-decoration: none;"><button type="button" style="width: 100%; background: transparent; border: 1px solid rgba(255,255,255,0.1); padding: 1rem;">Cancelar</button></a>
+        </div>
+    </form>
+</div>
+{% endblock %}
